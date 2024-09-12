@@ -11,7 +11,7 @@ namespace Application.Services
 {
     public interface IClienteService
     {
-        void Criar(Cliente cliente);
+        void Criar(ClienteInsertDto cliente);
         IEnumerable<Cliente> BuscarClientes(string nome, string codigo);
         public ClienteResponse BuscarTodosClientes();
     }

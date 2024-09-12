@@ -18,16 +18,44 @@ namespace Application.Services
             _clienteRepository = clienteRepository;
         }
 
-        public void Criar(Cliente cliente)
+        public void Criar(ClienteInsertDto cliente)
         {
             if (cliente is null)
             {
                 throw new ArgumentNullException(nameof(cliente), "O cliente não pode ser nulo.");
             }
 
+            var clientes = _clienteRepository.GetAll();
 
-            _clienteRepository.Add(cliente);
+            // Verifica se o CPF já está em uso
+            if (clientes.Any(c => c.CPF == cliente.CPF))
+            {
+                throw new InvalidOperationException("Este CPF já está em uso.");
+            }
+
+            // Verifica se o Email já está em uso
+            if (clientes.Any(c => c.Email == cliente.Email))
+            {
+                throw new InvalidOperationException("Este Email já está em uso.");
+            }
+
+            var clienteModel = new Cliente
+            {
+                Nome = cliente.Nome,
+                Email = cliente.Email,
+                Telefone = cliente.Telefone,
+                CPF = cliente.CPF,
+                Endereco = new Endereco
+                {
+                    Cidade = cliente.Endereco.Cidade,
+                    Estado = cliente.Endereco.Estado,
+                    Rua = cliente.Endereco.Rua,
+                }
+            };
+
+            _clienteRepository.Add(clienteModel);
         }
+
 
         public IEnumerable<Cliente> BuscarClientes(string nome, string codigo)
         {
@@ -44,7 +72,7 @@ namespace Application.Services
         {
             var dados = _clienteRepository.GetAll();
 
-           
+
             if (dados == null || !dados.Any())
             {
                 return new ClienteResponse
@@ -54,7 +82,7 @@ namespace Application.Services
                 };
             }
 
-           
+
             return new ClienteResponse
             {
                 Message = "Clientes encontrados com sucesso.",

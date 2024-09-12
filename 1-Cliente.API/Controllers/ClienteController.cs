@@ -1,4 +1,5 @@
-﻿using Application.Services;
+﻿using Application.DTO_s;
+using Application.Services;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,7 +29,7 @@ namespace _1_Cliente.API.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateCliente([FromBody] Cliente cliente)
+        public IActionResult CreateCliente([FromBody] ClienteInsertDto cliente)
         {
             _clienteService.Criar(cliente);
             return Ok();
